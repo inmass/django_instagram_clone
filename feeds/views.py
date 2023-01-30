@@ -340,6 +340,14 @@ def follow_toggle(request):
             if request.POST.get('type') == 'follow':
                 user_profile.following.add(follow_profile)
                 follow_profile.followers.add(user_profile)
+
+                notification = Notification(
+                    notified_user = follow_profile.user,
+                    user = request.user,
+                    type = 'F'
+                )
+                notification.save()
+
             elif request.POST.get('type') == 'unfollow':
                 user_profile.following.remove(follow_profile)
                 follow_profile.followers.remove(user_profile)

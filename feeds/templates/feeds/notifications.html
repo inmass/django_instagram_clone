@@ -10,11 +10,17 @@
             {% else %}
             <img class="picture-circle--small" src="{% static 'images/profile_placeholder.jpg' %}">
             {% endif %}
+            {% if notification.post %}
             <a href="{% url 'post' notification.post.id %}">{{notification.get_notification_text}}</a>
+            {% else %}
+            <a href="{% url 'profile' notification.user.username %}">{{notification.get_notification_text}}</a>
+            {% endif %}
 
+            {% if notification.post %}
             <div class="follow-toggle__container">
                 <img src="{{ notification.post.image.url }}" class="follow__card__image" height="50">
             </div>
+            {% endif %}
         </div>
     {% endfor %}
 {% else %}

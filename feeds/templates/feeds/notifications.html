@@ -1,0 +1,24 @@
+{% extends 'feeds/base.html' %}
+{% load static %}
+
+{% block content %}
+{% if notifications %}
+    {% for notification in notifications %}
+        <div class="follow__card" id="{{ profile.pk }}">
+            {% if notification.user.userprofile.profile_pic %}
+            <img class="picture-circle--small" src="{{ notification.user.userprofile.profile_pic.url }}">
+            {% else %}
+            <img class="picture-circle--small" src="{% static 'images/profile_placeholder.jpg' %}">
+            {% endif %}
+            <a href="{% url 'post' notification.post.id %}">{{notification.get_notification_text}}</a>
+
+            <div class="follow-toggle__container">
+                <img src="{{ notification.post.image.url }}" class="follow__card__image" height="50">
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <h1>No notifcations to show!</h1>
+
+{% endif %}
+{% endblock %}

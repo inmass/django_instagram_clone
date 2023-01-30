@@ -1,0 +1,134 @@
+{% load custom_tags %}
+<div class="navbar navbar-default navbar-fixed-top" id="main-nav">
+      <div class="container desktop">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">Django IG</a>
+            <button type="button" data-toggle="collapse" data-target="#navbar-main" class="navbar-toggle">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar-main" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.user.is_authenticated %}
+                    <li>
+                      <a href="{% url 'index' %}">
+                        <i class="fa fa-home {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-hidden="true"></i>
+                      </a>
+                    </li>
+                    <li><a href="{% url 'explore' %}"><i class="fa fa-search {% active 'explore' %}" aria-hidden="true"></i></a></li>
+                    <li><a href="{% url 'post_picture' %}"><i class="fa fa-upload {% active 'post_picture' %}" aria-hidden="true"></i></a></li>
+                    {% comment %} <li><a href="{% url 'notifications' %}"><i class="fa fa-heart-o {% active 'notifications' %}" aria-hidden="true"></i></a></li> {% endcomment %}
+                    <li><a href="{% url 'notifications' %}">
+                      <span class="fa-lg">
+                        <i class="fa fa-heart-o {% active 'notifications' %}"></i>
+                        {% if request.user.userprofile.get_new_notifications %}
+                        <span class="fa-stack fa-sm" style="position: absolute;right: -4px;top: 6px;color:white;">
+                          <i class="fa fa-circle fa-stack-2x" style="color: red;"></i>
+                          <strong class="fa-stack-1x" style="position: absolute;right: 11px;top: -6px;color:white;font-size: 11px;">{{request.user.userprofile.get_new_notifications}}</strong>
+                        </span>
+                        {% endif %}
+                      </span>
+                    </a></li>
+                    <li><a href="{% url 'profile' request.user.username %}"><i class="fa fa-user {% active 'profile' %}" aria-hidden="true"></i></a></li>
+                    <li><a href="{% url 'inbox' %}">
+                      <span class="fa-lg">
+                        <i class="fa fa-inbox {% active 'inbox' %}"></i>
+                        {% if request.user.userprofile.get_number_of_unseen_chats %}
+                        <span class="fa-stack fa-sm" style="position: absolute;right: -4px;top: 6px;color:white;">
+                          <i class="fa fa-circle fa-stack-2x" style="color: red;"></i>
+                          <strong class="fa-stack-1x" style="position: absolute;right: 11px;top: -6px;color:white;font-size: 11px;">{{request.user.userprofile.get_number_of_unseen_chats}}</strong>
+                        </span>
+                        {% endif %}
+                      </span>
+                    </a></li>
+                    <!--
+                      Using profile page logout for now
+                      <li><a href="{% url 'signout' %}">Signout</a></li>
+                    -->
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'signup' %}">Signup</a></li>
+                {% endif %}
+            </ul>
+        </div>
+      </div>
+      <div class="container mobile">
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'index' %}">
+            <div class="col-xs-3">
+              <i class="fa fa-home {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-hidden="true"></i>
+            </div>
+          </a>
+          <a href="{% url 'explore' %}">
+            <div class="col-xs-3">
+              <i class="fa fa-search {% active 'explore' %}" aria-hidden="true"></i>
+            </div>
+          </a>
+          <a href="{% url 'post_picture' %}">
+            <div class="col-xs-3">
+              <i class="fa fa-camera {% active 'post_picture' %}" aria-hidden="true"></i>
+            </div>
+          </a>
+          <a href="{% url 'notifications' %}">
+            <div class="col-xs-3">
+              {% comment %} <i class="fa fa-heart {% active 'notifications' %}" aria-hidden="true"></i> {% endcomment %}
+              <span class="fa-lg">
+                <i class="fa fa-heart {% active 'notifications' %}"></i>
+                {% if request.user.userprofile.get_new_notifications %}
+                <span class="fa-stack fa-sm" style="position: absolute;right: -4px;top: -6px;color:white;">
+                  <i class="fa fa-circle fa-stack-2x" style="color: red;"></i>
+                  <strong class="fa-stack-1x" style="position: absolute;right: 11px;top: 6px;color:white;font-size: 11px;">{{request.user.userprofile.get_new_notifications}}</strong>
+                </span>
+                {% endif %}
+              </span>
+            </div>
+          </a>
+          <a href="{% url 'profile' request.user.username %}">
+            <div class="col-xs-3">
+              <i class="fa fa-user {% active 'profile' %}" aria-hidden="true"></i>
+            </div>
+          </a>
+        {% else %}
+          <div class="navbar-header">
+              <a href="/" class="navbar-brand">Django IG</a>
+              <a href="{% url 'login' %}" class="navbar-brand">Login</a>
+              <a href="{% url 'signup' %}" class="navbar-brand">Signup</a>
+          </div>
+        {% endif %}
+      </div>
+</div>
+
+
+<!-- Mobile upper bar, only displays on mobile -->
+{% if request.user.is_authenticated %}
+<div class="navbar navbar-default navbar-fixed-top visible-xs" id="mobile-top-nav">
+  {% if request.resolver_match.url_name == 'index' %}
+    <div class="navbar-header">
+        <a href="/" class="navbar-brand">Django IG</a>
+        {% comment %} <a href="{% url 'inbox' %}"><i class="fa fa-inbox active item-right" aria-hidden="true">{{request.user.userprofile.get_number_of_unseen_chats}}</i></a> {% endcomment %}
+        <a href="{% url 'inbox' %}">
+          <span class="fa-lg">
+            <i class="fa fa-inbox active item-right"></i>
+            {% if request.user.userprofile.get_number_of_unseen_chats %}
+            <span class="fa-stack fa-sm" style="position: absolute;right: -4px;top: 6px;color:white;">
+              <i class="fa fa-circle fa-stack-2x" style="color: red;"></i>
+              <strong class="fa-stack-1x" style="position: absolute;right: 11px;top: -6px;color:white;font-size: 11px;">{{request.user.userprofile.get_number_of_unseen_chats}}</strong>
+            </span>
+            {% endif %}
+          </span>
+        </a>
+    </div>
+  {% elif request.resolver_match.url_name == 'post' or request.resolver_match.url_name == 'post_picture' or request.resolver_match.url_name == 'chat' %}
+    <a class="back-button"><i class="fa fa-arrow-left active"></i></a>
+  {% elif request.resolver_match.url_name == 'inbox' %}
+    <a class="back-button"><i class="fa fa-arrow-left active"></i></a>
+    <a class="new-message" href="{% url 'new_chat' %}"><i class="fa fa-plus active"></i></a>
+  {% else %}
+    <div class="navbar-header">
+        <a href="/" class="navbar-brand">Django IG</a>
+    </div>
+  {% endif %}
+</div>
+{% endif %}

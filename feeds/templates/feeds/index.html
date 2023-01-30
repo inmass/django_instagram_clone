@@ -1,0 +1,67 @@
+{% extends 'feeds/base.html' %}
+
+{% load static custom_tags %}
+
+{% block content %}
+    <div class="cards-listing">
+        {% for post in posts %}
+            <div class="row">
+                <div class="card view-update {{ post.pk }}">
+                    <div class="card__panel-head">
+                        <div class="poster__info">
+                            <a href="{% url 'profile' post.user_profile.user.username %}" class="poster__name">
+                              {% if post.user_profile.profile_pic %}
+                                <img class="poster__profilepic" src="{{ post.user_profile.profile_pic.url }}">
+                              {% else %}
+                                <img class="poster__profilepic" src="{% static 'images/profile_placeholder.jpg' %}">
+                              {% endif %}
+                              {{ post.user_profile.user.username }}
+                            </a>
+                            <span class="poster__timestamp">
+                                {{ post.posted_on|timesince }}
+                            </span>
+                        </div>
+                    </div>
+                    <img class="card__main-image" src="{{ post.image.url }}">
+                    <div class="card__panel-body">
+                        <a href="{% url 'likes' post.pk %}">
+                          <div class="likes">
+                            {% if post.get_number_of_likes %}
+                                {{ post.get_number_of_likes }} like{% if post.get_number_of_likes > 1 %}s{% endif %}
+                            {% endif %}
+                          </div>
+                        </a>
+                        <ul class="comment-list">
+                          <li class="comment-list__comment">
+                            <a class="user" href="{% url 'profile' post.user_profile.user.username %}">
+                              {{ post.user_profile.user.username }}
+                            </a>
+                            <span class="comment">{{ post.title | parse_hashtags | safe }}</span>
+                          </li>
+                          <a class="view-more"></a>
+                          {% for comment in post.comment_set.all %}
+                            <li class="comment-list__comment">
+                              <a href="{% url 'profile' comment.user.username %}" class="user">
+                                {{ comment.user.username }}
+                              </a>
+                              <span class="comment">{{ comment.comment }}</span>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                        {% if request.user.is_authenticated %}
+                          <section class="input-row">
+                            <i class="fa {% has_user_liked_post post request.user %} submit-like" aria-hidden="true"></i>
+                            <div class="comment-input-wrapper">
+                              <input class="add-comment" type="text" placeholder="Add a comment...">
+                            </div>
+                            <div class="hidden-data {{ post.pk }}" style="display: none;">
+                              <span class="post-pk">{{ post.pk }}</span>
+                            </div>
+                          </section>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'feeds/base.html' %}
+
+{% load static %}
+
+{% block body_class_override %}white{% endblock %}
+{% block content %}
+  <div id="messages" style="height: 600px; overflow-y: scroll; overflow-x: hidden; padding: 10px; margin-bottom: 10px">
+    {% for message in messages %}
+      <div class="message-box {% if request.user == message.message_sender %}message-sent{% else %}message-received{% endif %}" data-mssg-id="{{ message.id }}">
+        {% if request.user != message.sender %}<div class="sender">{{ message.sender.username }}</div>{% endif %}
+        <div class="text">{{ message.text }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <form id="chatForm">
+    <div id="chatData" style="display: none">
+      <span id="session-key">{{ request.session.session_key }}</span>
+      <span id="user">{{ request.user.username }}</span>
+    </div>
+    <input type="text" id="messageInput" placeholder="Write a message...">
+  </form>
+
+{% endblock %}
+
+
+{% block extrascript %}
+<script src="{% static 'js/inbox.js' %}"></script>
+{% endblock %}

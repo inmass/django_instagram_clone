@@ -1,0 +1,35 @@
+{% extends 'feeds/base.html' %}
+
+{% load static custom_tags %}
+
+{% block content %}
+<div class="row">
+
+  <div class="controls desktop">
+    <div class="right">
+      <a class="new-message" href="{% url 'new_chat' %}"><i class="fa fa-plus active"></i></a>
+    </div>
+  </div>
+  {% for room in rooms %}
+    {% find_proper_user request.user room as user_for_display %}
+    <div class="card__panel-head message" {% if room.get_unseen_messages %}style = "font-weight: bold;"{% endif %} >
+      <a href="{% url 'chat' room.label %}">
+        <div class="poster__info">
+          {% if user_for_display.userprofile.profile_pic %}
+            <img class="picture-circle--medium" src="{{ user_for_display.userprofile.profile_pic.url }}">
+          {% else %}
+            <img class="picture-circle--medium" src="{% static 'images/profile_placeholder.jpg' %}">
+          {% endif %}
+          <div class="message-info">
+            <p class="username">{{ user_for_display.username }}</p>
+            <p class="text">{{ room.get_last_message|truncatechars:30 }}</p>
+          </div>
+          <div class="timestamp">{{ room.get_last_message_timestamp }}</div>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+
+</div>
+
+{% endblock %}

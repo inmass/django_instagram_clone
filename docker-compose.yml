@@ -1,0 +1,42 @@
+version: "3"
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_DB=instagramdb
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=4yHTsI2SVaun3lYI
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./db:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5434:5432"
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    restart: always
+    ports:
+      - "8018:8000"
+    depends_on:
+      - db
+  nginx:
+    image: nginx:latest
+    ports:
+      - "84:80"
+    volumes:
+      - ./media:/media
+      - ./static:/static
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web
+  redis:
+    image: redis:5
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/data
+

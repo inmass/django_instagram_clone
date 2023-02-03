@@ -40,8 +40,8 @@ if PRODUCTION == 'true':
         }
     }
 
-    STATIC_URL = 'http://162.19.246.212:84/static/'
-    MEDIA_URL = 'http://162.19.246.212:84/media/'
+    STATIC_URL = 'http://141.144.227.138:84/static/'
+    MEDIA_URL = 'http://141.144.227.138:84/media/'
     
 else:
     DEBUG = True
